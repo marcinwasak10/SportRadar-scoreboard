@@ -47,13 +47,46 @@ const Scoreboard = () => {
     ])
   }
 
+  const modifyScore = (score) => {
+    const uneditedGames = games.filter(game => game.id !== score.gameId);
+    const gameToUpdate = games.find(game => game.id === score.gameId);
+    const updatedGame = {
+      ...gameToUpdate,
+      homeTeam: {
+        ...gameToUpdate.homeTeam,
+        score: score.homeTeamScore,
+      },
+      awayTeam: {
+        ...gameToUpdate.awayTeam,
+        score: score.awayTeamScore,
+      },
+    }
+
+    const sameGoalTallyMatchIndex = uneditedGames.findIndex(
+      game => game.homeTeam.score + game.awayTeam.score === score.homeTeamScore + score.awayTeamScore
+    );
+
+    if (sameGoalTallyMatchIndex >= 0) {
+      setGames([
+        ...uneditedGames.slice(0, sameGoalTallyMatchIndex),
+        updatedGame,
+        ...uneditedGames.slice(sameGoalTallyMatchIndex)
+      ])
+    } else {
+      setGames([
+        updatedGame,
+        ...uneditedGames
+      ])
+    }
+  }
+
   return <>
     <h1>Scoreboard</h1>
     <StartGame startNewGame={(matchInfo) => startNewGame(matchInfo)}/>
     {
       games
         .filter(game => game.inProgress)
-        .map((game) => <Scorecard key={game.id} game={game} endGame={endGame} />)
+        .map((game) => <Scorecard key={game.id} game={game} endGame={endGame} modifyScore={modifyScore} />)
     }
   </>
 };

@@ -100,3 +100,35 @@ test('hides the scorecard for an ended game', () => {
   expect(scorecardElements).toHaveLength(1);
   expect(scorecardElements[0]).toHaveTextContent('FRA');
 })
+
+test('changes the scorecard order when the score is updated', () => {
+  const { container } = render(<Scoreboard />);
+
+  const homeTeamNameInput = container.querySelector('#home-team-name-input');
+  const awayTeamNameInput = container.querySelector('#away-team-name-input');
+  const startGameButton = container.querySelector('#start-game-button');
+
+  fireEvent.change(homeTeamNameInput, { target: { value: 'ARG' } });
+  fireEvent.change(awayTeamNameInput, { target: { value: 'MEX' } });
+  fireEvent.click(startGameButton);
+
+  fireEvent.change(homeTeamNameInput, { target: { value: 'FRA' } });
+  fireEvent.change(awayTeamNameInput, { target: { value: 'DEN' } });
+  fireEvent.click(startGameButton);
+
+  const modifyScoreButton = container.querySelector('#score-card-1 .modify-score-button');
+  fireEvent.click(modifyScoreButton);
+
+  const homeTeamScoreInput = container.querySelector('#game-1-home-team-score-input');
+  const awayTeamScoreInput = container.querySelector('#game-1-away-team-score-input');
+
+  fireEvent.change(homeTeamScoreInput, { target: { value: 2 } });
+  fireEvent.change(awayTeamScoreInput, { target: { value: 1 } });
+
+  fireEvent.click(modifyScoreButton);
+
+  const scorecardElements = container.querySelectorAll('.score-card');
+  expect(scorecardElements).toHaveLength(2);
+  expect(scorecardElements[0]).toHaveTextContent('FRA 2 - 1 DEN');
+  expect(scorecardElements[1]).toHaveTextContent('ARG 0 - 0 MEX');
+})
