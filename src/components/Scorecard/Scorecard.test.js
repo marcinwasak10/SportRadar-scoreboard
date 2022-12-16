@@ -17,7 +17,7 @@ test('renders title', () => {
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
   const titleElement = screen.queryByText('Score');
@@ -40,7 +40,7 @@ test('renders score', () => {
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
   const scoreElement = container.querySelector('.score-card-score');
@@ -63,7 +63,7 @@ test('renders end game button', () => {
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
   const endGameButtonElement = container.querySelector('.end-game-button');
@@ -71,7 +71,7 @@ test('renders end game button', () => {
   expect(endGameButtonElement).toHaveTextContent('End game');
 });
 
-test('renders modifyScore button', () => {
+test('renders updateScore button', () => {
   const { container } = render(
     <Scorecard
       game={{
@@ -87,12 +87,12 @@ test('renders modifyScore button', () => {
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
-  const modifyScoreButtonElement = container.querySelector('.modify-score-button');
-  expect(modifyScoreButtonElement).toBeInTheDocument();
-  expect(modifyScoreButtonElement).toHaveTextContent('Modify score');
+  const updateScoreButtonElement = container.querySelector('.update-score-button');
+  expect(updateScoreButtonElement).toBeInTheDocument();
+  expect(updateScoreButtonElement).toHaveTextContent('Update score');
 });
 
 test('calls the endGame function when the button is clicked', () => {
@@ -113,7 +113,7 @@ test('calls the endGame function when the button is clicked', () => {
         "inProgress": true
       }}
       endGame={endGame}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
   const endGameButtonElement = container.querySelector('.end-game-button');
@@ -123,7 +123,7 @@ test('calls the endGame function when the button is clicked', () => {
   expect(endGame).toHaveBeenCalledWith(gameId);
 });
 
-test('shows the score inputs when the modify score button is clicked', () => {
+test('shows the score inputs when the update score button is clicked', () => {
   const gameId = 2;
   const { container } = render(
     <Scorecard
@@ -140,13 +140,13 @@ test('shows the score inputs when the modify score button is clicked', () => {
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={jest.fn()}
+      updateScore={jest.fn()}
     />
   );
 
-  const modifyScoreButton = container.querySelector('.modify-score-button');
-  fireEvent.click(modifyScoreButton);
-  expect(modifyScoreButton).toHaveTextContent('OK');
+  const updateScoreButton = container.querySelector('.update-score-button');
+  fireEvent.click(updateScoreButton);
+  expect(updateScoreButton).toHaveTextContent('OK');
 
   const homeTeamScoreInput = container.querySelector(`#game-${gameId}-home-team-score-input`);
   const awayTeamScoreInput = container.querySelector(`#game-${gameId}-away-team-score-input`);
@@ -155,8 +155,8 @@ test('shows the score inputs when the modify score button is clicked', () => {
   expect(awayTeamScoreInput).toBeInTheDocument();
 })
 
-test('calls the modifyScore function when the modify score button is clicked with inputs changed', () => {
-  const modifyScore = jest.fn();
+test('calls the updateScore function when the update score button is clicked with inputs changed', () => {
+  const updateScore = jest.fn();
   const gameId = 2;
   const { container } = render(
     <Scorecard
@@ -173,12 +173,12 @@ test('calls the modifyScore function when the modify score button is clicked wit
         "inProgress": true
       }}
       endGame={jest.fn()}
-      modifyScore={modifyScore}
+      updateScore={updateScore}
     />
   );
 
-  const modifyScoreButton = container.querySelector('.modify-score-button');
-  fireEvent.click(modifyScoreButton);
+  const updateScoreButton = container.querySelector('.update-score-button');
+  fireEvent.click(updateScoreButton);
 
   const homeTeamScoreInput = container.querySelector(`#game-${gameId}-home-team-score-input`);
   const awayTeamScoreInput = container.querySelector(`#game-${gameId}-away-team-score-input`);
@@ -186,10 +186,10 @@ test('calls the modifyScore function when the modify score button is clicked wit
   fireEvent.change(homeTeamScoreInput, { target: { value: 2 } });
   fireEvent.change(awayTeamScoreInput, { target: { value: 1 } });
 
-  fireEvent.click(modifyScoreButton);
+  fireEvent.click(updateScoreButton);
 
-  expect(modifyScore).toHaveBeenCalledTimes(1);
-  expect(modifyScore).toHaveBeenCalledWith({
+  expect(updateScore).toHaveBeenCalledTimes(1);
+  expect(updateScore).toHaveBeenCalledWith({
     gameId,
     homeTeamScore: 2,
     awayTeamScore: 1,

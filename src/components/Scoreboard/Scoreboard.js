@@ -4,6 +4,7 @@ import Scorecard from '../Scorecard/Scorecard';
 
 const Scoreboard = () => {
   const [games, setGames] = useState([]);
+  const [currentlyPlayingTeams, setCurrentlyPlayingTeams] = useState([]);
 
   const startNewGame = (matchInfo) => {
     const newGame = {
@@ -32,10 +33,16 @@ const Scoreboard = () => {
         ...games.slice(goallessGameIndex)
       ]);
     }
+
+    setCurrentlyPlayingTeams([...currentlyPlayingTeams, matchInfo.homeTeam, matchInfo.awayTeam]);
   }
 
   const endGame = (gameId) => {
     const endingGameIndex = games.findIndex(game => game.id === gameId);
+    setCurrentlyPlayingTeams(
+      currentlyPlayingTeams
+        .filter(team => team === games[endingGameIndex].homeTeam.name || team === games[endingGameIndex].awayTeam.name)
+    )
 
     setGames([
       ...games.slice(0, endingGameIndex),
@@ -47,7 +54,7 @@ const Scoreboard = () => {
     ])
   }
 
-  const modifyScore = (score) => {
+  const updateScore = (score) => {
     const uneditedGames = games.filter(game => game.id !== score.gameId);
     const gameToUpdate = games.find(game => game.id === score.gameId);
     const updatedGame = {
@@ -82,11 +89,11 @@ const Scoreboard = () => {
 
   return <>
     <h1>Scoreboard</h1>
-    <StartGame startNewGame={(matchInfo) => startNewGame(matchInfo)}/>
+    <StartGame startNewGame={(matchInfo) => startNewGame(matchInfo)} currentlyPlayingTeams={currentlyPlayingTeams} />
     {
       games
         .filter(game => game.inProgress)
-        .map((game) => <Scorecard key={game.id} game={game} endGame={endGame} modifyScore={modifyScore} />)
+        .map((game) => <Scorecard key={game.id} game={game} endGame={endGame} updateScore={updateScore} />)
     }
   </>
 };

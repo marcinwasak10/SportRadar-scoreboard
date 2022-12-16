@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const Scorecard = ({
   game,
   endGame,
-  modifyScore,
+  updateScore,
 }) => {
   const { homeTeam, awayTeam, id } = game;
   const [isEditMode, setIsEditMode] = useState(false);
@@ -19,13 +19,13 @@ const Scorecard = ({
     })
   }
 
-  const handleModifyScoreButtonClick = () => {
+  const handleUpdateScoreButtonClick = () => {
     if (!isEditMode) {
       setIsEditMode(true);
       return;
     }
 
-    modifyScore({
+    updateScore({
       gameId: id,
       ...score,
     })
@@ -58,7 +58,7 @@ const Scorecard = ({
         <strong>-</strong>
         {renderScore('away')}
         {awayTeam?.name}</div>
-      <button className='modify-score-button' type='button' onClick={() => handleModifyScoreButtonClick()}>{isEditMode ? 'OK' : 'Modify score'}</button>
+      <button className='update-score-button' type='button' onClick={() => handleUpdateScoreButtonClick()}>{isEditMode ? 'OK' : 'Update score'}</button>
       <button className='end-game-button' type='button' onClick={() => endGame(id)}>End game</button>
     </div>
   )

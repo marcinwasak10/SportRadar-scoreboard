@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const StartGame = ({ startNewGame }) => {
+const StartGame = ({ startNewGame, currentlyPlayingTeams }) => {
   const initialState = {
     homeTeam: '',
     awayTeam: '',
@@ -21,6 +21,8 @@ const StartGame = ({ startNewGame }) => {
       !matchInfo.homeTeam
       || !matchInfo.awayTeam
       || matchInfo.homeTeam === matchInfo.awayTeam
+      || currentlyPlayingTeams.includes(matchInfo.homeTeam)
+      || currentlyPlayingTeams.includes(matchInfo.awayTeam)
     ) return;
     startNewGame(matchInfo);
     setMatchInfo(initialState);

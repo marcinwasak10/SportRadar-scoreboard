@@ -2,13 +2,23 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import StartGame from './StartGame';
 
 test('renders title', () => {
-  render(<StartGame />);
+  render(
+    <StartGame
+      startNewGame={jest.fn()}
+      currentlyPlayingTeams={[]}
+    />
+  );
   const titleElement = screen.getByText('Start new game');
   expect(titleElement).toBeInTheDocument();
 });
 
 test('renders the inputs correctly', () => {
-  const { container } = render(<StartGame />);
+  const { container } = render(
+    <StartGame
+      startNewGame={jest.fn()}
+      currentlyPlayingTeams={[]}
+    />
+  );
 
   const homeTeamNameInput = container.querySelector('#home-team-name-input');
   const awayTeamNameInput = container.querySelector('#away-team-name-input');
@@ -18,7 +28,12 @@ test('renders the inputs correctly', () => {
 });
 
 test('renders the button correctly', () => {
-  const { container } = render(<StartGame />);
+  const { container } = render(
+    <StartGame
+      startNewGame={jest.fn()}
+      currentlyPlayingTeams={[]}
+    />
+  );
 
   const startGameButton = container.querySelector('#start-game-button');
 
@@ -27,7 +42,12 @@ test('renders the button correctly', () => {
 
 test('calls the startNewGame function when the form is filled out correctly', () => {
   const startNewGame = jest.fn()
-  const { container } = render(<StartGame startNewGame={startNewGame} />);
+  const { container } = render(
+    <StartGame
+      startNewGame={startNewGame}
+      currentlyPlayingTeams={[]}
+    />
+  );
 
   const homeTeamNameInput = container.querySelector('#home-team-name-input');
   const awayTeamNameInput = container.querySelector('#away-team-name-input');
@@ -46,7 +66,12 @@ test('calls the startNewGame function when the form is filled out correctly', ()
 
 test('does not call the startNewGame function when the form is filled out incorrectly', () => {
   const startNewGame = jest.fn()
-  const { container } = render(<StartGame startNewGame={startNewGame} />);
+  const { container } = render(
+    <StartGame
+      startNewGame={startNewGame}
+      currentlyPlayingTeams={[]}
+    />
+  );
 
   const homeTeamNameInput = container.querySelector('#home-team-name-input');
   const awayTeamNameInput = container.querySelector('#away-team-name-input');
@@ -58,6 +83,26 @@ test('does not call the startNewGame function when the form is filled out incorr
   expect(startNewGame).toHaveBeenCalledTimes(0);
 
   fireEvent.change(awayTeamNameInput, { target: { value: 'ARG' } }); // home and away teams are the same
+  fireEvent.click(startGameButton);
+
+  expect(startNewGame).toHaveBeenCalledTimes(0);
+});
+
+test('does not call the startNewGame function when the form includes a team that is currently playing', () => {
+  const startNewGame = jest.fn()
+  const { container } = render(
+    <StartGame
+      startNewGame={startNewGame}
+      currentlyPlayingTeams={['ARG', 'POL']}
+    />
+  );
+
+  const homeTeamNameInput = container.querySelector('#home-team-name-input');
+  const awayTeamNameInput = container.querySelector('#away-team-name-input');
+  const startGameButton = container.querySelector('#start-game-button');
+
+  fireEvent.change(homeTeamNameInput, { target: { value: 'ARG' } });
+  fireEvent.change(awayTeamNameInput, { target: { value: 'MEX' } });
   fireEvent.click(startGameButton);
 
   expect(startNewGame).toHaveBeenCalledTimes(0);
