@@ -73,6 +73,30 @@ test('displays scorecards in a correct order', () => {
   fireEvent.click(startGameButton);
 
   const scorecardElements = container.querySelectorAll('.score-card');
+  expect(scorecardElements).toHaveLength(2);
   expect(scorecardElements[0]).toHaveTextContent('FRA');
   expect(scorecardElements[1]).toHaveTextContent('ARG');
+})
+
+test('hides the scorecard for an ended game', () => {
+  const { container } = render(<Scoreboard />);
+
+  const homeTeamNameInput = container.querySelector('#home-team-name-input');
+  const awayTeamNameInput = container.querySelector('#away-team-name-input');
+  const startGameButton = container.querySelector('#start-game-button');
+
+  fireEvent.change(homeTeamNameInput, { target: { value: 'ARG' } });
+  fireEvent.change(awayTeamNameInput, { target: { value: 'MEX' } });
+  fireEvent.click(startGameButton);
+
+  fireEvent.change(homeTeamNameInput, { target: { value: 'FRA' } });
+  fireEvent.change(awayTeamNameInput, { target: { value: 'DEN' } });
+  fireEvent.click(startGameButton);
+
+  const endGameButton = container.querySelector('#score-card-0 .end-game-button');
+  fireEvent.click(endGameButton);
+
+  const scorecardElements = container.querySelectorAll('.score-card');
+  expect(scorecardElements).toHaveLength(1);
+  expect(scorecardElements[0]).toHaveTextContent('FRA');
 })

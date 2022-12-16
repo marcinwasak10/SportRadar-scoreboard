@@ -34,13 +34,26 @@ const Scoreboard = () => {
     }
   }
 
+  const endGame = (gameId) => {
+    const endingGameIndex = games.findIndex(game => game.id === gameId);
+
+    setGames([
+      ...games.slice(0, endingGameIndex),
+      {
+        ...games[endingGameIndex],
+        inProgress: false
+      },
+      ...games.slice(endingGameIndex + 1),
+    ])
+  }
+
   return <>
     <h1>Scoreboard</h1>
     <StartGame startNewGame={(matchInfo) => startNewGame(matchInfo)}/>
     {
       games
         .filter(game => game.inProgress)
-        .map((game) => <Scorecard key={game.id} game={game} />)
+        .map((game) => <Scorecard key={game.id} game={game} endGame={endGame} />)
     }
   </>
 };
